@@ -19,7 +19,7 @@
     <!-- Tabs (switch views with data-view) -->
     <nav class="tabbar" aria-label="Main">
       <button class="tab active" data-view="browse">Browse</button>
-      <button class="tab" data-view="loans">My loans</button>
+      <button class="tab" data-view="loans">Loaned books</button>
       <button class="tab" data-view="account">Account</button>
     </nav>
 
@@ -50,7 +50,7 @@
 
       <!-- ============ MY LOANS ============ -->
       <section class="section hidden" id="view-loans">
-        <h2 class="section-title">My loans</h2>
+        <h2 class="section-title">Loaned Books</h2>
 
         <div class="stat-row">
           <div class="stat"><strong id="stat-borrowed">0</strong>Borrowed</div>
@@ -145,6 +145,11 @@
 
   <!-- ============ TOAST (remove .hidden to show) ============ -->
   <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+      window.API_BASE = 'http://localhost:5000/api';
+    </script>
+    <script src="main.js"></script>
 
 </body>
 </html>
