@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lendly</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Header -->
+    <header class="app-header">
+      <h1 class="app-title">Lendly</h1>
+      <span class="badge" id="member-badge" style="cursor: pointer;" title="Click to view account">Not signed in</span>
+    </header>
+
+    <!-- Tabs (switch views with data-view) -->
+    <nav class="tabbar" aria-label="Main">
+      <button class="tab active" data-view="browse">Browse</button>
+      <button class="tab" data-view="loans">My loans</button>
+      <button class="tab" data-view="account">Account</button>
+    </nav>
+
+    <main class="container">
+
+      <!-- ============ BROWSE ============ -->
+      <section class="section" id="view-browse">
+        <h2 class="section-title">Find a book</h2>
+
+        <div class="search">
+          <input class="search-input" id="search" type="search"
+                 placeholder="Search by title or author" aria-label="Search books">
+        </div>
+
+        <div class="chips" id="filters">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="available">Available</button>
+          <!-- Genre chips can be added by JS from your data -->
+        </div>
+
+        <!-- JS fills this with books (clone #book-template) -->
+        <div class="book-grid" id="book-grid"></div>
+
+        <p class="empty hidden" id="loading">Loading books…</p>
+        <p class="empty hidden" id="no-results">No books match your search. Try a different title or author.</p>
+        <p class="empty hidden" id="load-error">Couldn't load books. Check your connection and try again.<br><button class="btn secondary" id="retry-books" type="button" style="margin-top: 12px;">Retry</button></p>
+      </section>
+
+      <!-- ============ MY LOANS ============ -->
+      <section class="section hidden" id="view-loans">
+        <h2 class="section-title">My loans</h2>
+
+        <div class="stat-row">
+          <div class="stat"><strong id="stat-borrowed">0</strong>Borrowed</div>
+          <div class="stat"><strong id="stat-soon">0</strong>Due soon</div>
+          <div class="stat"><strong id="stat-overdue">0</strong>Overdue</div>
+        </div>
+
+        <!-- JS fills this with loans (clone #loan-template) -->
+        <ul class="loan-list" id="loan-list"></ul>
+
+        <p class="empty hidden" id="loading-loans">Loading your loans…</p>
+        <p class="empty hidden" id="loans-error">Couldn't load loans. Check your connection and try again.</p>
+        <p class="empty hidden" id="no-loans">You have no borrowed books. Browse the catalogue to borrow one.</p>
+      </section>
+
+      <!-- ============ ACCOUNT ============ -->
+      <section class="section hidden" id="view-account">
+        <h2 class="section-title">Account</h2>
+
+        <form class="form" id="account-form">
+          <div class="field">
+            <label class="label" for="name">Full name</label>
+            <input class="input" id="name" name="name" type="text" autocomplete="name" required>
+          </div>
+
+          <div class="field">
+            <label class="label" for="member-id">Member ID</label>
+            <input class="input" id="member-id" name="memberId" type="text" inputmode="numeric" required>
+            <span class="hint">Printed on the back of your library card.</span>
+            <span class="error-text hidden" id="member-id-error">Enter a valid member ID.</span>
+          </div>
+
+          <div class="field">
+            <label class="label" for="loan-length">Default loan length</label>
+            <select class="select" id="loan-length" name="loanLength">
+              <option value="7">1 week</option>
+              <option value="14" selected>2 weeks</option>
+              <option value="21">3 weeks</option>
+            </select>
+          </div>
+
+          <button class="btn primary block" type="submit">Save changes</button>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============ TEMPLATES (cloned by JS, never shown directly) ============ -->
+
+  <!-- Book card: set data-id / data-genre / data-status on .book-card,
+       fill .book-title, .book-author, .book-pages, and swap the badge class + text -->
+  <template id="book-template">
+    <article class="book-card">
+      <div class="book-cover"></div>
+      <div class="book-info">
+        <h3 class="book-title"></h3>
+        <p class="book-author"></p>
+        <div class="book-meta">
+          <span class="badge available book-status">Available</span>
+          <span class="book-extra"></span>
+        </div>
+        <button class="btn primary block borrow-btn">Borrow</button>
+      </div>
+    </article>
+  </template>
+
+  <!-- Loan row: add .due-soon or .overdue to .loan, and match the badge class -->
+  <template id="loan-template">
+    <li class="loan">
+      <div class="loan-info">
+        <h3 class="book-title"></h3>
+        <p class="book-author"></p>
+        <p class="loan-due"></p>
+      </div>
+      <span class="badge borrowed loan-status">Borrowed</span>
+      <button class="btn secondary return-btn">Return</button>
+    </li>
+  </template>
+
+  <!-- ============ BORROW CONFIRM MODAL (remove .hidden to open) ============ -->
+  <div class="modal-backdrop hidden" id="borrow-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <h2 class="modal-title" id="modal-title">Borrow this book?</h2>
+      <p id="modal-text"></p>
+      <div class="modal-actions">
+        <button class="btn" id="modal-cancel">Cancel</button>
+        <button class="btn primary" id="modal-confirm">Borrow</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TOAST (remove .hidden to show) ============ -->
+  <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>
